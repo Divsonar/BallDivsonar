@@ -1,0 +1,11 @@
+Model Information:
+* title:	Blanket In The Wind
+* source:	https://sketchfab.com/3d-models/blanket-in-the-wind-af3e37a0868742d3b756e784adc060ae
+* author:	Aboulicious (https://sketchfab.com/aboulicious)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Blanket In The Wind" (https://sketchfab.com/3d-models/blanket-in-the-wind-af3e37a0868742d3b756e784adc060ae) by Aboulicious (https://sketchfab.com/aboulicious) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
