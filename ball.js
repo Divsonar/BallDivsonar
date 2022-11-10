@@ -12,7 +12,7 @@ const start = Date.now();
 function init() {
 
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.y = -100;
+    camera.position.y = -50;
     camera.position.z = 0;
 
     scene = new THREE.Scene();
@@ -21,7 +21,7 @@ function init() {
     // scene.background = new THREE.Color(0,0,0);
 
     const pointLight1 = new THREE.PointLight(0xffffff);
-    pointLight1.position.set(0, 75, 0);
+    pointLight1.position.set(0, 200, 0);
     scene.add(pointLight1);
 
     const pointLight2 = new THREE.PointLight(0xffffff, 0.25);
@@ -36,39 +36,40 @@ function init() {
 
     const laptoploader = new GLTFLoader();
     laptoploader.load("./textures/dibesfer_voxel_pc/scene.gltf", ( gltf ) => {
-            gltf.scene.position.z = 200
+            gltf.scene.position.z = 150
             gltf.scene.position.x = -100
             gltf.scene.position.y = -200;
             gltf.scene.rotation.y = -0.75
             // gltf.scene.rotation.y = -1.5;
-            gltf.scene.scale.set(60,60,60);
+            gltf.scene.scale.set(50,50,50);
             scene.add(gltf.scene) ;
             render();
         },
     );
 
     const pianoloader = new GLTFLoader();
-    pianoloader.load("./textures/grand_piano/scene.gltf", ( gltf ) => {
-            gltf.scene.position.z = -450; 
+    pianoloader.load("./textures/grand_piano_1mb/scene.gltf", ( gltf ) => {
+            gltf.scene.position.z = -150; 
+            gltf.scene.position.x = -150; 
             gltf.scene.position.y = -200;
             gltf.scene.rotation.y = 0;
-            gltf.scene.scale.set(8,8,8);
+            gltf.scene.scale.set(7,7,7);
             scene.add(gltf.scene) ;
             render();
         },
     );
 
-    const animeloader = new GLTFLoader();
-    animeloader.load("./textures/blanket_in_the_wind/scene.gltf", ( gltf ) => {
-            gltf.scene.position.z = 125; 
-            gltf.scene.position.x = 100
-            gltf.scene.position.y = -150;
-            gltf.scene.rotation.y = -0.75;
-            gltf.scene.scale.set(0.75,0.75,0.75);
-            scene.add(gltf.scene) ;
-            render();
-        },
-    );
+    // const animeloader = new GLTFLoader();
+    // animeloader.load("./textures/blanket_in_the_wind/scene.gltf", ( gltf ) => {
+    //         gltf.scene.position.z = 125; 
+    //         gltf.scene.position.x = 100
+    //         gltf.scene.position.y = -150;
+    //         gltf.scene.rotation.y = -0.75;
+    //         gltf.scene.scale.set(0.75,0.75,0.75);
+    //         scene.add(gltf.scene) ;
+    //         render();
+    //     },
+    // );
 
     const cubeTexture = new THREE.TextureLoader().load('pepega.png')
     cubeTexture.wrapS = THREE.RepeatWrapping;
@@ -80,7 +81,7 @@ function init() {
 
     // Plane
 
-    const planeTexture = new THREE.TextureLoader().load('./textures/ColorLR.png')
+    const planeTexture = new THREE.TextureLoader().load('./textures/floor2.jpg')
     planeTexture.wrapS = THREE.RepeatWrapping;
     planeTexture.wrapT = THREE.RepeatWrapping;
     planeTexture.repeat.set( 2, 20 );
