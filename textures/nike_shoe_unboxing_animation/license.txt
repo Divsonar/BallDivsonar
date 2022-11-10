@@ -1,0 +1,11 @@
+Model Information:
+* title:	Nike Shoe Unboxing Animation
+* source:	https://sketchfab.com/3d-models/nike-shoe-unboxing-animation-2a37e7725570445aa2a9c87b2a7d272a
+* author:	agneya (https://sketchfab.com/agneya)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Nike Shoe Unboxing Animation" (https://sketchfab.com/3d-models/nike-shoe-unboxing-animation-2a37e7725570445aa2a9c87b2a7d272a) by agneya (https://sketchfab.com/agneya) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

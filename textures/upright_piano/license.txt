@@ -1,0 +1,11 @@
+Model Information:
+* title:	Upright Piano (WIP)
+* source:	https://sketchfab.com/3d-models/upright-piano-wip-eb76131fcae44993a532ad1b99050deb
+* author:	catdevpete (https://sketchfab.com/catdevpete)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Upright Piano (WIP)" (https://sketchfab.com/3d-models/upright-piano-wip-eb76131fcae44993a532ad1b99050deb) by catdevpete (https://sketchfab.com/catdevpete) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
