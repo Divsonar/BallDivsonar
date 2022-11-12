@@ -2,6 +2,7 @@ import * as THREE from './packages/three.js';
 import { AsciiEffect } from './packages/asciieffect.js';
 import { TrackballControls } from './packages/trackballcontrols.js';
 import { GLTFLoader } from './packages/gltfloader.js';
+import { pingpong } from 'three/src/math/MathUtils.js';
 
 let camera, scene, renderer;
 
@@ -12,52 +13,61 @@ const start = Date.now();
 
 function init() {
 
+
+
+
+
+
+    // Camera
+
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.y = -20;
+    //-20
     camera.position.z = 0;
+
+
+
+
+
+
+    // Scene
 
     scene = new THREE.Scene();
     const skyTexture = new THREE.TextureLoader().load('./textures/bg.jpg');
     scene.background = skyTexture;
     // scene.background = new THREE.Color(0,0,0);
 
-    // const dirLight = new THREE.PointLight(0xffffff,1);
-    // dirLight.position.set(100, 100, 0);
-    // dirLight.castShadow=true;
-    // dirLight.shadow.camera.top = 2;
-    // dirLight.shadow.camera.bottom = - 2;
-    // dirLight.shadow.camera.left = - 2;
-    // dirLight.shadow.camera.right = 2;
-    // dirLight.shadow.camera.near = 0.1;
-    // dirLight.shadow.camera.far = 40;
-    // scene.add(dirLight);
+
+
+
+
+
+    //Lights
 
     const bulbGeometry = new THREE.SphereGeometry( 5, 16, 8 );
-    var bulbLight = new THREE.PointLight( 0xffee88, 1000000, 1000, 2 );
-
+    var bulbLight = new THREE.PointLight( 0xffee88, 100000, 1000, 2 );
     var bulbMat = new THREE.MeshStandardMaterial( {
-        emissive: 0xffffee,
+        emissive: 0xffffff,
         emissiveIntensity: 1,
         color: 0x000000
     } );
-    bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
-    bulbLight.position.set( 20, 350, 0 );
+    // bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
+    bulbLight.shadow.bias = -0.05;
+    bulbLight.position.set( 140, -20, 280 );
     bulbLight.castShadow = true;
     scene.add( bulbLight );
 
-    // const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
-    // hemiLight.position.set(20, 20, 10);
-    // scene.add(hemiLight);
+    var ambientLight = new THREE.AmbientLight( 0xffee88, 0.15, 1000, 2 );
+    ambientLight.position.set( 0, -20, -200 );
+    // ambientLight.castShadow = true; 0.15
+    scene.add( ambientLight );
 
-    // const pointLight3 = new THREE.DirectionalLight(0xffffff, 1);
-    // pointLight3.position.set(-350, 150, 100);
-    // pointLight3.castShadow = true;
-    // scene.add(pointLight3);
 
-    // const helper = new THREE.CameraHelper(pointLight3.shadow.camera)
-    // scene.add(helper)
 
-    // sphere = new THREE.Mesh(new THREE.SphereGeometry(200, 20, 10), new THREE.MeshPhongMaterial({ flatShading: true }));
+
+
+
+    // Objects
 
     const deskloader = new GLTFLoader();
     deskloader.load("textures/simple_dirty_desk/scene.gltf", ( gltf ) => {
@@ -101,9 +111,30 @@ function init() {
         },
     );
 
+    const lamploader = new GLTFLoader();
+    lamploader.load("textures/simple_studio_light/scene.gltf", ( gltf ) => {
+            gltf.scene.position.z = 255
+            gltf.scene.position.x = 195
+            gltf.scene.position.y = -205;
+            gltf.scene.rotation.y = -1.7
+            // gltf.scene.rotation.y = -1.5;
+            gltf.scene.scale.set(100,100,100);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                  child.receiveShadow = true;
+                }
+             });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
+            scene.add(gltf.scene) ;
+            render();
+        },
+    );
+
     const pianoloader = new GLTFLoader();
     pianoloader.load("./textures/grand_piano_1mb/scene.gltf", ( gltf ) => {
-            gltf.scene.position.z = -400; 
+            gltf.scene.position.z = -700; 
             gltf.scene.position.x = -135; 
             gltf.scene.position.y = -200;
             gltf.scene.rotation.y = 0;
@@ -123,13 +154,12 @@ function init() {
 
     phone = new GLTFLoader();
     phone.load("textures/samsung_galaxy_s21_ultra/scene.gltf", ( gltf ) => {
-            console.log(gltf.scene.id)
             modelnumber = gltf.scene.id 
             gltf.scene.position.z = 125; 
             // gltf.scene.position.x = 150
             // gltf.scene.position.y = -200;
             // gltf.scene.rotation.y = -0.75;
-            gltf.scene.scale.set(0.7,0.7,0.7);
+            gltf.scene.scale.set(0.35,0.35,0.35);
             gltf.scene.traverse(function (child) {
                 if (child.isMesh) {
                   child.castShadow = true;
@@ -143,75 +173,115 @@ function init() {
         },
     );
 
-    // const cubeTexture = new THREE.TextureLoader().load('pepega.png')
-    // cubeTexture.wrapS = THREE.RepeatWrapping;
-    // cubeTexture.wrapT = THREE.RepeatWrapping;
-    // // cubeTexture.repeat.set( 4, 4 );
-    // cube = new THREE.Mesh(new THREE.BoxGeometry(200, 200, 200), new THREE.MeshBasicMaterial({ map: cubeTexture }));
-    // // scene.add(cube)
-    // // scene.add(sphere);
+    const sofaloader = new GLTFLoader();
+    sofaloader.load("textures/sofa/scene.gltf", ( gltf ) => {
+            gltf.scene.position.z = -350; 
+            gltf.scene.position.x = -165; 
+            gltf.scene.position.y = -150;
+            gltf.scene.rotation.y = 1.57;
+            gltf.scene.scale.set(150,150,150);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                  child.receiveShadow = true;
+                }
+             });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
+            scene.add(gltf.scene) ;
+            render();
+        },
+    );
+
+    const tvloader = new GLTFLoader();
+    tvloader.load("textures/modern_entertainment_center_free/scene.gltf", ( gltf ) => {
+            gltf.scene.position.z = -360; 
+            gltf.scene.position.x = 185; 
+            gltf.scene.position.y = -150;
+            gltf.scene.rotation.y = 3.1457;
+            gltf.scene.scale.set(0.5,0.5,0.5);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                  child.receiveShadow = true;
+                }
+             });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
+            scene.add(gltf.scene) ;
+            render();
+        },
+    );
+
+
+
 
     // Plane
 
-    // const planeTexture = new THREE.TextureLoader().load('./textures/marble.jpg')
-    // planeTexture.wrapS = THREE.RepeatWrapping;
-    // planeTexture.wrapT = THREE.RepeatWrapping;
-    // planeTexture.repeat.set( 4, 40 );
-    // plane = new THREE.Mesh(new THREE.PlaneGeometry(500, 10000), new THREE.MeshPhongMaterial({ color: 0xe0e0e0, wireframe: false}));
-    // plane.position.y = - 200;
-    // plane.rotation.x = - Math.PI / 2;
-    // scene.add(plane);
+    const planeTexture = new THREE.TextureLoader().load('./textures/marble.jpg')
+    planeTexture.wrapS = THREE.RepeatWrapping;
+    planeTexture.wrapT = THREE.RepeatWrapping;
+    planeTexture.repeat.set( 4, 40 );
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(500, 10000), new THREE.MeshPhongMaterial({ color: 0xe0e0e0, wireframe: false, map:planeTexture}));
+    plane.position.y = - 200;
+    plane.rotation.x = - Math.PI / 2;
+    plane.castShadow = true;
+    plane.receiveShadow = true;
+    scene.add(plane);
 
-    const textureLoader = new THREE.TextureLoader();
-    const cubeMat = new THREE.MeshStandardMaterial( {
-        roughness: 0.7,
-        color: 0xffffff,
-        bumpScale: 0.002,
-        metalness: 0.2
-    } );
+    // const textureLoader = new THREE.TextureLoader();
+    // const cubeMat = new THREE.MeshStandardMaterial( {
+    //     roughness: 0,
+    //     color: 0xffffff,
+    //     bumpScale: 0,
+    //     metalness: 0
+    // } );
 
-    textureLoader.wrapS = THREE.RepeatWrapping;
-    textureLoader.wrapT = THREE.RepeatWrapping;
-    textureLoader.anisotropy = 4;
-    textureLoader.load( "./textures/hardwood2_diffuse.jpg", function ( map ) {
-        map.encoding = THREE.sRGBEncoding;
-        cubeMat.map = map;
-        cubeMat.needsUpdate = true;
-    } );
-    textureLoader.load( "./textures/hardwood2_bump.jpg", function ( map ) {
-        cubeMat.bumpMap = map;
-        cubeMat.needsUpdate = true;
-    } );
+    // textureLoader.wrapS = THREE.RepeatWrapping;
+    // textureLoader.wrapT = THREE.RepeatWrapping;
+    // textureLoader.anisotropy = 4;
+    // textureLoader.load( "./textures/hardwood2_diffuse.jpg", function ( map ) {
+    //     map.encoding = THREE.sRGBEncoding;
+    //     cubeMat.map = map;
+    //     cubeMat.needsUpdate = true;
+    // } );
+    // textureLoader.load( "./textures/hardwood2_bump.jpg", function ( map ) {
+    //     cubeMat.bumpMap = map;
+    //     cubeMat.needsUpdate = true;
+    // } );
 
-    textureLoader.load( "./textures/hardwood2_roughness.jpg", function ( map ) {
-        cubeMat.roughnessMap = map;
-        cubeMat.needsUpdate = true;
+    // textureLoader.load( "./textures/hardwood2_roughness.jpg", function ( map ) {
+    //     cubeMat.roughnessMap = map;
+    //     cubeMat.needsUpdate = true;
 
-    } );
+    // } );
 
-    for(var x = -10; x < 10; x++) {
-        for(var z = -10; z < 10; z++) {
-            var plane = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), cubeMat);
-            plane.position.x = - (x * 200);
-            plane.position.y = - 200;
-            plane.position.z = - (z * 200);
-            plane.rotation.x = - Math.PI / 2;
-            plane.castShadow = true;
-            plane.receiveShadow = true;
-            scene.add(plane);
-        }
-    }
+    // for(var x = -10; x < 10; x++) {
+    //     for(var z = -10; z < 10; z++) {
+    //         var plane = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), cubeMat);
+    //         plane.position.x = - (x * 200);
+    //         plane.position.y = - 200;
+    //         plane.position.z = - (z * 200);
+    //         plane.rotation.x = - Math.PI / 2;
+    //         plane.castShadow = true;
+    //         plane.receiveShadow = true;
+    //         scene.add(plane);
+    //     }
+    // }
 
+
+
+
+
+
+    // Render
 
     renderer = new THREE.WebGLRenderer({ antialias: true, canvas: document.querySelector('#bg')});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.shadowMap.enabled = true;
     renderer.toneMapping = THREE.ReinhardToneMapping;
-    
-
     window.addEventListener('resize', onWindowResize);
 
 }
@@ -225,8 +295,6 @@ function onWindowResize() {
 
 }
 
-//
-
 function animate() {
 
     requestAnimationFrame(animate);
@@ -238,28 +306,25 @@ function animate() {
 function moveCamera() {
     const t = document.body.getBoundingClientRect().top + 10000 * 0.2;
     camera.position.z = t * 0.25
-    console.log(camera.position.z)
+    console.log("Camera Z Pos:" + camera.position.z)
     // camera.position.x = t * -0.02;
     // camera.rotation.y = t * -0.02;
 }
-
-// function deafaultPosition(){
-//     camera.position.z = 500;
-// }
 
 function render() {
 
     const timer = Date.now() - start;
     for (var i = 0; i < scene.children.length; i++)
         if (scene.children[i].id == modelnumber) {
-            scene.children[i].position.set(100, Math.sin(timer * 0.001) * 10 - 15, 190);
+            scene.children[i].position.set(100, Math.sin(timer * 0.001) * 10 - 30, 190);
             scene.children[i].rotation.set(0, timer * 0.0010 ,0);
         } 
 
+    //Bouncing Pepega Cube Legacy Code (KEEP)
     // cube.position.y = Math.abs(Math.sin(timer * 0.002)) * 150;
     // cube.rotation.x = timer * 0.0003;
     // cube.rotation.z = timer * 0.0002;
-    
+
     const targetAspect = window.innerWidth / window.innerHeight;
     const imageAspect = 3840 / 2160;
     const factor = imageAspect / targetAspect;
@@ -269,11 +334,7 @@ function render() {
     scene.background.repeat.x = factor > 1 ? 1 / factor : 1;
     scene.background.offset.y = factor > 1 ? 0 : (1 - factor) / 2;
     scene.background.repeat.y = factor > 1 ? 1 : factor;
-
-    // controls.update();
-
     renderer.render(scene, camera);
-
 }
 
 
@@ -281,5 +342,4 @@ init();
 animate();
 document.body.onscroll = moveCamera;
 moveCamera();
-// deafaultPosition();
-console.log(camera.position.y)
+startanimate();
