@@ -2,7 +2,6 @@ import * as THREE from './packages/three.js';
 import { AsciiEffect } from './packages/asciieffect.js';
 import { TrackballControls } from './packages/trackballcontrols.js';
 import { GLTFLoader } from './packages/gltfloader.js';
-import { pingpong } from 'three/src/math/MathUtils.js';
 
 let camera, scene, renderer;
 
@@ -21,7 +20,7 @@ function init() {
     // Camera
 
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.y = -20;
+    camera.position.y = -120;
     //-20
     camera.position.z = 0;
 
@@ -307,6 +306,9 @@ function moveCamera() {
     const t = document.body.getBoundingClientRect().top + 10000 * 0.2;
     camera.position.z = t * 0.25
     console.log("Camera Z Pos:" + camera.position.z)
+    if (camera.position.y < -20) {
+        camera.position.y += 1.5
+    }
     // camera.position.x = t * -0.02;
     // camera.rotation.y = t * -0.02;
 }
