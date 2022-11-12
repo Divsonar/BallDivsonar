@@ -21,19 +21,34 @@ function init() {
     scene.background = skyTexture;
     // scene.background = new THREE.Color(0,0,0);
 
-    // const pointLight1 = new THREE.PointLight(0xffffff);
-    // pointLight1.position.set(0, 1000, 500);
-    // scene.add(pointLight1);
+    // const dirLight = new THREE.PointLight(0xffffff,1);
+    // dirLight.position.set(100, 100, 0);
+    // dirLight.castShadow=true;
+    // dirLight.shadow.camera.top = 2;
+    // dirLight.shadow.camera.bottom = - 2;
+    // dirLight.shadow.camera.left = - 2;
+    // dirLight.shadow.camera.right = 2;
+    // dirLight.shadow.camera.near = 0.1;
+    // dirLight.shadow.camera.far = 40;
+    // scene.add(dirLight);
 
     const pointLight2 = new THREE.PointLight(0xffffff, 1.5);
-    pointLight2.position.set(400, -150, 200);
+    pointLight2.position.set(400, -10, 200);
     scene.add(pointLight2);
 
-    const pointLight3 = new THREE.PointLight(0xffffff, 1);
-    pointLight3.position.set(-400, 150, -200);
-    scene.add(pointLight3);
+    // const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
+    // hemiLight.position.set(20, 20, 10);
+    // scene.add(hemiLight);
 
-    sphere = new THREE.Mesh(new THREE.SphereGeometry(200, 20, 10), new THREE.MeshPhongMaterial({ flatShading: true }));
+    // const pointLight3 = new THREE.DirectionalLight(0xffffff, 1);
+    // pointLight3.position.set(-350, 150, 100);
+    // pointLight3.castShadow = true;
+    // scene.add(pointLight3);
+
+    // const helper = new THREE.CameraHelper(pointLight3.shadow.camera)
+    // scene.add(helper)
+
+    // sphere = new THREE.Mesh(new THREE.SphereGeometry(200, 20, 10), new THREE.MeshPhongMaterial({ flatShading: true }));
 
     const deskloader = new GLTFLoader();
     deskloader.load("textures/simple_dirty_desk/scene.gltf", ( gltf ) => {
@@ -43,6 +58,11 @@ function init() {
             gltf.scene.rotation.y = 0.61
             // gltf.scene.rotation.y = -1.5;
             gltf.scene.scale.set(175,175,175);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                }
+             });
             scene.add(gltf.scene) ;
             render();
         },
@@ -56,6 +76,11 @@ function init() {
             gltf.scene.rotation.y = -0.95
             // gltf.scene.rotation.y = -1.5;
             gltf.scene.scale.set(25,25,25);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                }
+             });
             scene.add(gltf.scene) ;
             render();
         },
@@ -68,6 +93,11 @@ function init() {
             gltf.scene.position.y = -200;
             gltf.scene.rotation.y = 0;
             gltf.scene.scale.set(6.25,6.25,6.25);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                }
+             });
             scene.add(gltf.scene) ;
             render();
         },
@@ -82,18 +112,23 @@ function init() {
             // gltf.scene.position.y = -200;
             // gltf.scene.rotation.y = -0.75;
             gltf.scene.scale.set(0.7,0.7,0.7);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                }
+             });
             scene.add(gltf.scene) ;
             render();
         },
     );
 
-    const cubeTexture = new THREE.TextureLoader().load('pepega.png')
-    cubeTexture.wrapS = THREE.RepeatWrapping;
-    cubeTexture.wrapT = THREE.RepeatWrapping;
-    // cubeTexture.repeat.set( 4, 4 );
-    cube = new THREE.Mesh(new THREE.BoxGeometry(200, 200, 200), new THREE.MeshBasicMaterial({ map: cubeTexture }));
-    // scene.add(cube)
-    // scene.add(sphere);
+    // const cubeTexture = new THREE.TextureLoader().load('pepega.png')
+    // cubeTexture.wrapS = THREE.RepeatWrapping;
+    // cubeTexture.wrapT = THREE.RepeatWrapping;
+    // // cubeTexture.repeat.set( 4, 4 );
+    // cube = new THREE.Mesh(new THREE.BoxGeometry(200, 200, 200), new THREE.MeshBasicMaterial({ map: cubeTexture }));
+    // // scene.add(cube)
+    // // scene.add(sphere);
 
     // Plane
 
@@ -101,15 +136,17 @@ function init() {
     planeTexture.wrapS = THREE.RepeatWrapping;
     planeTexture.wrapT = THREE.RepeatWrapping;
     planeTexture.repeat.set( 4, 40 );
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(500, 10000), new THREE.MeshBasicMaterial({ color: 0xe0e0e0, wireframe: false, map:planeTexture}));
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(500, 10000), new THREE.MeshPhongMaterial({ color: 0xe0e0e0, wireframe: false}));
     plane.position.y = - 200;
     plane.rotation.x = - Math.PI / 2;
+    plane.receiveShadow = true;
+    plane.castShadow = true;
     scene.add(plane);
 
     // renderer = new THREE.WebGLRenderer({});
     renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg')});
     renderer.setSize(window.innerWidth, window.innerHeight);
-
+    renderer.shadowMap.enabled = true;
     // effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true });
     // effect.setSize(window.innerWidth, window.innerHeight);
     // effect.domElement.style.color = 'white';
@@ -153,9 +190,6 @@ function moveCamera() {
     console.log(camera.position.z)
     // camera.position.x = t * -0.02;
     // camera.rotation.y = t * -0.02;
-    cube.rotation.x += 0.02;
-    cube.rotation.y += 0.05;
-    cube.rotation.z += 0.02;
 }
 
 // function deafaultPosition(){
