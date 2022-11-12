@@ -162,7 +162,7 @@ function moveCamera() {
 //     camera.position.z = 500;
 // }
 
-async function render() {
+function render() {
 
     const timer = Date.now() - start;
     for (var i = 0; i < scene.children.length; i++)
@@ -170,12 +170,6 @@ async function render() {
             scene.children[i].position.set(100, Math.sin(timer * 0.001) * 10 - 15, 190);
             scene.children[i].rotation.set(0, timer * 0.0010 ,0);
         } 
-    // console.log(scene)
-    // await scene.children[modelnumber].position.set(125, Math.sin(timer * 0.001) * 20, 150);
-    // await scene.children[modelnumber].rotation.set(0, timer * 0.0010 ,0);
-    // gltf.scene.position.y = ;
-    // gltf.scene.position.x = ;
-    // gltf.scene.position.z = ;
 
     // cube.position.y = Math.abs(Math.sin(timer * 0.002)) * 150;
     // cube.rotation.x = timer * 0.0003;
