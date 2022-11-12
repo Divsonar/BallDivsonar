@@ -32,9 +32,18 @@ function init() {
     // dirLight.shadow.camera.far = 40;
     // scene.add(dirLight);
 
-    const pointLight2 = new THREE.PointLight(0xffffff, 1.5);
-    pointLight2.position.set(400, -10, 200);
-    scene.add(pointLight2);
+    const bulbGeometry = new THREE.SphereGeometry( 5, 16, 8 );
+    var bulbLight = new THREE.PointLight( 0xffee88, 1000000, 1000, 2 );
+
+    var bulbMat = new THREE.MeshStandardMaterial( {
+        emissive: 0xffffee,
+        emissiveIntensity: 1,
+        color: 0x000000
+    } );
+    bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
+    bulbLight.position.set( 20, 350, 0 );
+    bulbLight.castShadow = true;
+    scene.add( bulbLight );
 
     // const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
     // hemiLight.position.set(20, 20, 10);
@@ -61,8 +70,11 @@ function init() {
             gltf.scene.traverse(function (child) {
                 if (child.isMesh) {
                   child.castShadow = true;
+                  child.receiveShadow = true;
                 }
              });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
             scene.add(gltf.scene) ;
             render();
         },
@@ -79,8 +91,11 @@ function init() {
             gltf.scene.traverse(function (child) {
                 if (child.isMesh) {
                   child.castShadow = true;
+                  child.receiveShadow = true;
                 }
              });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
             scene.add(gltf.scene) ;
             render();
         },
@@ -96,8 +111,11 @@ function init() {
             gltf.scene.traverse(function (child) {
                 if (child.isMesh) {
                   child.castShadow = true;
+                  child.receiveShadow = true;
                 }
              });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
             scene.add(gltf.scene) ;
             render();
         },
@@ -115,8 +133,11 @@ function init() {
             gltf.scene.traverse(function (child) {
                 if (child.isMesh) {
                   child.castShadow = true;
+                  child.receiveShadow = true;
                 }
              });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
             scene.add(gltf.scene) ;
             render();
         },
@@ -132,34 +153,64 @@ function init() {
 
     // Plane
 
-    const planeTexture = new THREE.TextureLoader().load('./textures/marble.jpg')
-    planeTexture.wrapS = THREE.RepeatWrapping;
-    planeTexture.wrapT = THREE.RepeatWrapping;
-    planeTexture.repeat.set( 4, 40 );
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(500, 10000), new THREE.MeshPhongMaterial({ color: 0xe0e0e0, wireframe: false}));
-    plane.position.y = - 200;
-    plane.rotation.x = - Math.PI / 2;
-    plane.receiveShadow = true;
-    plane.castShadow = true;
-    scene.add(plane);
+    // const planeTexture = new THREE.TextureLoader().load('./textures/marble.jpg')
+    // planeTexture.wrapS = THREE.RepeatWrapping;
+    // planeTexture.wrapT = THREE.RepeatWrapping;
+    // planeTexture.repeat.set( 4, 40 );
+    // plane = new THREE.Mesh(new THREE.PlaneGeometry(500, 10000), new THREE.MeshPhongMaterial({ color: 0xe0e0e0, wireframe: false}));
+    // plane.position.y = - 200;
+    // plane.rotation.x = - Math.PI / 2;
+    // scene.add(plane);
 
-    // renderer = new THREE.WebGLRenderer({});
-    renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg')});
+    const textureLoader = new THREE.TextureLoader();
+    const cubeMat = new THREE.MeshStandardMaterial( {
+        roughness: 0.7,
+        color: 0xffffff,
+        bumpScale: 0.002,
+        metalness: 0.2
+    } );
+
+    textureLoader.wrapS = THREE.RepeatWrapping;
+    textureLoader.wrapT = THREE.RepeatWrapping;
+    textureLoader.anisotropy = 4;
+    textureLoader.load( "./textures/hardwood2_diffuse.jpg", function ( map ) {
+        map.encoding = THREE.sRGBEncoding;
+        cubeMat.map = map;
+        cubeMat.needsUpdate = true;
+    } );
+    textureLoader.load( "./textures/hardwood2_bump.jpg", function ( map ) {
+        cubeMat.bumpMap = map;
+        cubeMat.needsUpdate = true;
+    } );
+
+    textureLoader.load( "./textures/hardwood2_roughness.jpg", function ( map ) {
+        cubeMat.roughnessMap = map;
+        cubeMat.needsUpdate = true;
+
+    } );
+
+    for(var x = -10; x < 10; x++) {
+        for(var z = -10; z < 10; z++) {
+            var plane = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), cubeMat);
+            plane.position.x = - (x * 200);
+            plane.position.y = - 200;
+            plane.position.z = - (z * 200);
+            plane.rotation.x = - Math.PI / 2;
+            plane.castShadow = true;
+            plane.receiveShadow = true;
+            scene.add(plane);
+        }
+    }
+
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, canvas: document.querySelector('#bg')});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
-    // effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true });
-    // effect.setSize(window.innerWidth, window.innerHeight);
-    // effect.domElement.style.color = 'white';
-    // effect.domElement.style.backgroundColor = 'black';
-
-    // Special case: append effect.domElement, instead of renderer.domElement.
-    // AsciiEffect creates a custom domElement (a div container) where the ASCII elements are placed.
-
-    // document.body.appendChild(effect.domElement);
-
-    // controls = new TrackballControls(camera, effect.domElement);
-
-    //
+    renderer.physicallyCorrectLights = true;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    
 
     window.addEventListener('resize', onWindowResize);
 
