@@ -1,0 +1,11 @@
+Model Information:
+* title:	TV Stand (Low Poly)
+* source:	https://sketchfab.com/3d-models/tv-stand-low-poly-359f4c1670154c959c1bd9b6b4623e5b
+* author:	DKDTheGreat1 (https://sketchfab.com/DKDTheGreat1)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "TV Stand (Low Poly)" (https://sketchfab.com/3d-models/tv-stand-low-poly-359f4c1670154c959c1bd9b6b4623e5b) by DKDTheGreat1 (https://sketchfab.com/DKDTheGreat1) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

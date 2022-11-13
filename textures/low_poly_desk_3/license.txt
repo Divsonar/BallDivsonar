@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low Poly Desk #3
+* source:	https://sketchfab.com/3d-models/low-poly-desk-3-2f980276689247e1849f9c9edbf7e212
+* author:	JustBlender (https://sketchfab.com/JustBlender)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low Poly Desk #3" (https://sketchfab.com/3d-models/low-poly-desk-3-2f980276689247e1849f9c9edbf7e212) by JustBlender (https://sketchfab.com/JustBlender) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

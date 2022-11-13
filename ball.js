@@ -19,8 +19,9 @@ function init() {
 
     // Camera
 
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.y = -120;
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 2000);
+    camera.position.y = -20;
+    // camera.rotation.x = -Math.PI
     //-20
     camera.position.z = 0;
 
@@ -44,19 +45,61 @@ function init() {
     //Lights
 
     const bulbGeometry = new THREE.SphereGeometry( 5, 16, 8 );
-    var bulbLight = new THREE.PointLight( 0xffee88, 100000, 1000, 2 );
+    var bulbLight = new THREE.PointLight( 0xffee88, 20000, 0, 2 );
     var bulbMat = new THREE.MeshStandardMaterial( {
         emissive: 0xffffff,
         emissiveIntensity: 1,
         color: 0x000000
     } );
     // bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
-    bulbLight.shadow.bias = -0.05;
+    bulbLight.shadow.bias = -0.01;
+    // bulbLight.shadow.mapSize.width = 300
+    // bulbLight.shadow.mapSize.height = 300
     bulbLight.position.set( 140, -20, 280 );
     bulbLight.castShadow = true;
+    bulbLight.shadow.radius = 5
+    bulbLight.shadow.blurSamples = 25
     scene.add( bulbLight );
 
-    var ambientLight = new THREE.AmbientLight( 0xffee88, 0.15, 1000, 2 );
+
+    // const signGeometry = new THREE.SphereGeometry( 5, 16, 8 );
+    var signLight = new THREE.PointLight( 0xFF00FF, 100000, 1000, 2 );
+    // var signMat = new THREE.MeshStandardMaterial( {
+    //     emissive: 0xF000FF,
+    //     emissiveIntensity: 1,
+    //     color: 0xF000FF
+    // } );
+    // signLight.add( new THREE.Mesh( signGeometry, signMat ) );
+    signLight.shadow.bias = -0.01;
+    // bulbLight.shadow.mapSize.width = 300
+    // bulbLight.shadow.mapSize.height = 300
+    signLight.position.set( -135, 120, -500 );
+    signLight.castShadow = true;
+    signLight.shadow.radius = 5
+    signLight.shadow.blurSamples = 25
+    scene.add( signLight );
+
+
+    //  const signGeometry = new THREE.SphereGeometry( 5, 16, 8 );
+     var lamp2Light = new THREE.PointLight( 0xFFFFFF, 100000, 1000, 2 );
+    //  var signMat = new THREE.MeshStandardMaterial( {
+    //      emissive: 0xF000FF,
+    //      emissiveIntensity: 1,
+    //      color: 0xF000FF
+    //  } );
+    //  lamp2Light.add( new THREE.Mesh( signGeometry, signMat ) );
+     lamp2Light.shadow.bias = -0.05;
+     // bulbLight.shadow.mapSize.width = 300
+     // bulbLight.shadow.mapSize.height = 300
+     lamp2Light.position.set( 210, 110, -400 );
+     lamp2Light.castShadow = true;
+     lamp2Light.shadow.radius = 5
+     lamp2Light.shadow.blurSamples = 50
+     scene.add( lamp2Light );
+
+
+
+    var ambientLight = new THREE.AmbientLight( 0xffee88, 0.05, 1000, 2 );
     ambientLight.position.set( 0, -20, -200 );
     // ambientLight.castShadow = true; 0.15
     scene.add( ambientLight );
@@ -68,14 +111,36 @@ function init() {
 
     // Objects
 
+    // LEGACY DESK
+    // const deskloader = new GLTFLoader();
+    // deskloader.load("textures/simple_dirty_desk/scene.gltf", ( gltf ) => {
+    //         gltf.scene.position.z = 255
+    //         gltf.scene.position.x = -65
+    //         gltf.scene.position.y = -205;
+    //         gltf.scene.rotation.y = 0.61
+    //         // gltf.scene.rotation.y = -1.5;
+    //         gltf.scene.scale.set(175,175,175);
+    //         gltf.scene.traverse(function (child) {
+    //             if (child.isMesh) {
+    //               child.castShadow = true;
+    //               child.receiveShadow = true;
+    //             }
+    //          });
+    //         gltf.scene.castShadow = true;
+    //         gltf.scene.receiveShadow = true;
+    //         scene.add(gltf.scene) ;
+    //         render();
+    //     },
+    // );
+
     const deskloader = new GLTFLoader();
-    deskloader.load("textures/simple_dirty_desk/scene.gltf", ( gltf ) => {
+    deskloader.load("textures/low_poly_desk_3/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = 255
-            gltf.scene.position.x = -65
-            gltf.scene.position.y = -205;
-            gltf.scene.rotation.y = 0.61
+            gltf.scene.position.x = -6
+            gltf.scene.position.y = -115;
+            gltf.scene.rotation.y = 0.62
             // gltf.scene.rotation.y = -1.5;
-            gltf.scene.scale.set(175,175,175);
+            gltf.scene.scale.set(3,3,3);
             gltf.scene.traverse(function (child) {
                 if (child.isMesh) {
                   child.castShadow = true;
@@ -90,7 +155,7 @@ function init() {
     );
 
     const desktoploader = new GLTFLoader();
-    desktoploader.load("./textures/gaming_desktop_pc/scene.gltf", ( gltf ) => {
+    desktoploader.load("textures/gaming_desktop_pc.glb", ( gltf ) => {
             gltf.scene.position.z = 200
             gltf.scene.position.x = -0
             gltf.scene.position.y = -70;
@@ -154,7 +219,7 @@ function init() {
     phone = new GLTFLoader();
     phone.load("textures/samsung_galaxy_s21_ultra/scene.gltf", ( gltf ) => {
             modelnumber = gltf.scene.id 
-            gltf.scene.position.z = 125; 
+            gltf.scene.position.z = 135; 
             // gltf.scene.position.x = 150
             // gltf.scene.position.y = -200;
             // gltf.scene.rotation.y = -0.75;
@@ -193,12 +258,12 @@ function init() {
     );
 
     const tvloader = new GLTFLoader();
-    tvloader.load("textures/modern_entertainment_center_free/scene.gltf", ( gltf ) => {
+    tvloader.load("textures/led_tv_low_poly_free/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = -360; 
             gltf.scene.position.x = 185; 
-            gltf.scene.position.y = -150;
-            gltf.scene.rotation.y = 3.1457;
-            gltf.scene.scale.set(0.5,0.5,0.5);
+            gltf.scene.position.y = -140;
+            gltf.scene.rotation.y = Math.PI / 2;
+            gltf.scene.scale.set(100,100,100);
             gltf.scene.traverse(function (child) {
                 if (child.isMesh) {
                   child.castShadow = true;
@@ -212,8 +277,107 @@ function init() {
         },
     );
 
+    const tvstandloader = new GLTFLoader();
+    tvstandloader.load("textures/tv_stand_low_poly/scene.gltf", ( gltf ) => {
+            gltf.scene.position.z = -360; 
+            gltf.scene.position.x = 185; 
+            gltf.scene.position.y = -210;
+            gltf.scene.rotation.y = Math.PI / 2;
+            gltf.scene.scale.set(250,250,250);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = true;
+                  child.receiveShadow = true;
+                }
+             });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
+            scene.add(gltf.scene) ;
+            render();
+        },
+    );
+    
+    const signloader = new GLTFLoader();
+    signloader.load("textures/game_ready_japanese_small_vertical_neon_sign.glb", ( gltf ) => {
+            gltf.scene.position.z = -500; 
+            gltf.scene.position.x = -260; 
+            gltf.scene.position.y = 120;
+            gltf.scene.rotation.y = -Math.PI/2;
+            gltf.scene.scale.set(2.5,2.5,2.5);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = false;
+                  child.receiveShadow = true;
+                  child.material.emissive = new THREE.Color(0xF000FF);
+                  child.material.vertexColors = true;
+                }
+             });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
+            scene.add(gltf.scene) ;
+            render();
+        },
+    );
+
+    const lamp2loader = new GLTFLoader();
+    lamp2loader.load("textures/fluorescent_lamp/scene.gltf", ( gltf ) => {
+            gltf.scene.position.z = -400; 
+            gltf.scene.position.x = 250; 
+            gltf.scene.position.y = 120;
+            gltf.scene.rotation.z = Math.PI/2
+            gltf.scene.scale.set(2,2,2);
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                  child.castShadow = false;
+                  child.receiveShadow = true;
+                  child.material.emissive = new THREE.Color(0xFFFFFF);
+                  child.material.vertexColors = true;
+                }
+             });
+            gltf.scene.castShadow = true;
+            gltf.scene.receiveShadow = true;
+            scene.add(gltf.scene) ;
+            render();
+        },
+    );
 
 
+
+
+
+    // Walls
+
+    const bricktexture = new THREE.TextureLoader().load('textures/brickwall.jpg')
+    bricktexture.wrapS = THREE.RepeatWrapping;
+    bricktexture.wrapT = THREE.RepeatWrapping;
+    bricktexture.repeat.set( 6, 8 );
+    
+    const leftwall = new THREE.Mesh( new THREE.BoxGeometry( 4000, 2000, 0.1 ), new THREE.MeshStandardMaterial( { flatShading: false, map:bricktexture} ) );
+    leftwall.rotation.y = Math.PI /2
+    leftwall.position.y = -150
+    leftwall.position.x = -255
+    leftwall.position.z = -350
+    leftwall.castShadow = true;
+    leftwall.receiveShadow = true;
+    scene.add( leftwall );
+
+    const rightwall = new THREE.Mesh( new THREE.BoxGeometry( 4000, 2000, 0.1 ), new THREE.MeshStandardMaterial( { flatShading: false, map:bricktexture} ) );
+    rightwall.rotation.y = Math.PI /2
+    rightwall.position.y = -150
+    rightwall.position.x = 255
+    rightwall.position.z = -350
+    rightwall.castShadow = true;
+    rightwall.receiveShadow = true;
+    scene.add( rightwall );
+
+    const topwall = new THREE.Mesh( new THREE.BoxGeometry( 2000, 4000, 1 ), new THREE.MeshStandardMaterial( { flatShading: false, map:bricktexture} ) );
+    topwall.rotation.x = Math.PI/2
+    topwall.position.y = 350
+    topwall.position.x = 100
+    topwall.position.z = -350
+    topwall.castShadow = true;
+    topwall.receiveShadow = true;
+    scene.add( topwall );
 
     // Plane
 
@@ -227,6 +391,8 @@ function init() {
     plane.castShadow = true;
     plane.receiveShadow = true;
     scene.add(plane);
+
+
 
     // const textureLoader = new THREE.TextureLoader();
     // const cubeMat = new THREE.MeshStandardMaterial( {
@@ -305,10 +471,8 @@ function animate() {
 function moveCamera() {
     const t = document.body.getBoundingClientRect().top + 10000 * 0.2;
     camera.position.z = t * 0.25
+    camera.position.x = 0
     console.log("Camera Z Pos:" + camera.position.z)
-    if (camera.position.y < -20) {
-        camera.position.y += 1.5
-    }
     // camera.position.x = t * -0.02;
     // camera.rotation.y = t * -0.02;
 }
@@ -318,7 +482,7 @@ function render() {
     const timer = Date.now() - start;
     for (var i = 0; i < scene.children.length; i++)
         if (scene.children[i].id == modelnumber) {
-            scene.children[i].position.set(100, Math.sin(timer * 0.001) * 10 - 30, 190);
+            scene.children[i].position.set(100, Math.sin(timer * 0.001) * 10 - 35, 200);
             scene.children[i].rotation.set(0, timer * 0.0010 ,0);
         } 
 
@@ -344,4 +508,4 @@ init();
 animate();
 document.body.onscroll = moveCamera;
 moveCamera();
-startanimate();
+// startanimate();
