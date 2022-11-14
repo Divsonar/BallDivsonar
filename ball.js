@@ -106,6 +106,37 @@ function init() {
 
 
 
+    // Loading Screen
+
+    const loadingManager = new THREE.LoadingManager();
+
+    const progressBar = document.getElementById('progress-bar')
+    const maintext = document.getElementById('maindiv')
+
+    loadingManager.onStart = function(url, item, total) {
+        maintext.style.visibility = 'hidden';
+    }
+
+    loadingManager.onProgress = function(url, item, total) {
+        progressBar.value = (item/total) *100;
+    }
+
+    const progressBarConatiner = document.querySelector('.progress-bar-container');
+
+    loadingManager.onLoad = function(url, item, total) {
+        progressBarConatiner.style.display = 'none';
+        maintext.style.visibility = 'visible'
+        reloadScrollBars();
+    }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -133,7 +164,7 @@ function init() {
     //     },
     // );
 
-    const deskloader = new GLTFLoader();
+    const deskloader = new GLTFLoader(loadingManager);
     deskloader.load("textures/low_poly_desk_3/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = 255
             gltf.scene.position.x = -6
@@ -154,7 +185,7 @@ function init() {
         },
     );
 
-    const desktoploader = new GLTFLoader();
+    const desktoploader = new GLTFLoader(loadingManager);
     desktoploader.load("textures/gaming_desktop_pc.glb", ( gltf ) => {
             gltf.scene.position.z = 200
             gltf.scene.position.x = -0
@@ -175,7 +206,7 @@ function init() {
         },
     );
 
-    const lamploader = new GLTFLoader();
+    const lamploader = new GLTFLoader(loadingManager);
     lamploader.load("textures/simple_studio_light/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = 255
             gltf.scene.position.x = 195
@@ -196,7 +227,7 @@ function init() {
         },
     );
 
-    const pianoloader = new GLTFLoader();
+    const pianoloader = new GLTFLoader(loadingManager);
     pianoloader.load("./textures/grand_piano_1mb/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = -700; 
             gltf.scene.position.x = -135; 
@@ -216,7 +247,7 @@ function init() {
         },
     );
 
-    phone = new GLTFLoader();
+    phone = new GLTFLoader(loadingManager);
     phone.load("textures/samsung_galaxy_s21_ultra/scene.gltf", ( gltf ) => {
             modelnumber = gltf.scene.id 
             gltf.scene.position.z = 135; 
@@ -237,7 +268,7 @@ function init() {
         },
     );
 
-    const sofaloader = new GLTFLoader();
+    const sofaloader = new GLTFLoader(loadingManager);
     sofaloader.load("textures/sofa/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = -350; 
             gltf.scene.position.x = -165; 
@@ -257,7 +288,7 @@ function init() {
         },
     );
 
-    const tvloader = new GLTFLoader();
+    const tvloader = new GLTFLoader(loadingManager);
     tvloader.load("textures/led_tv_low_poly_free/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = -360; 
             gltf.scene.position.x = 185; 
@@ -277,7 +308,7 @@ function init() {
         },
     );
 
-    const tvstandloader = new GLTFLoader();
+    const tvstandloader = new GLTFLoader(loadingManager);
     tvstandloader.load("textures/tv_stand_low_poly/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = -360; 
             gltf.scene.position.x = 185; 
@@ -297,7 +328,7 @@ function init() {
         },
     );
     
-    const signloader = new GLTFLoader();
+    const signloader = new GLTFLoader(loadingManager);
     signloader.load("textures/game_ready_japanese_small_vertical_neon_sign.glb", ( gltf ) => {
             gltf.scene.position.z = -500; 
             gltf.scene.position.x = -260; 
@@ -319,7 +350,7 @@ function init() {
         },
     );
 
-    const lamp2loader = new GLTFLoader();
+    const lamp2loader = new GLTFLoader(loadingManager);
     lamp2loader.load("textures/fluorescent_lamp/scene.gltf", ( gltf ) => {
             gltf.scene.position.z = -400; 
             gltf.scene.position.x = 250; 
@@ -508,4 +539,7 @@ init();
 animate();
 document.body.onscroll = moveCamera;
 moveCamera();
+
+// Put Scroll back to Top upon Refresh
+history.scrollRestoration = 'manual';
 // startanimate();

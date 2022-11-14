@@ -10,4 +10,4 @@ function unloadScrollBars() {
   console.log("Scroll Bar Disabled Successfully")
 }
 
-reloadScrollBars()
+unloadScrollBars()
