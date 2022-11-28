@@ -128,9 +128,11 @@ function init() {
 
     const progressBar = document.getElementById('progress-bar')
     const maintext = document.getElementById('maindiv')
+    const navbar = document.getElementById('topdiv')
 
     loadingManager.onStart = function(url, item, total) {
         maintext.style.visibility = 'hidden';
+        navbar.style.visibility = 'hidden';
     }
 
     loadingManager.onProgress = function(url, item, total) {
@@ -142,6 +144,7 @@ function init() {
     loadingManager.onLoad = function(url, item, total) {
         progressBarConatiner.style.display = 'none';
         maintext.style.visibility = 'visible'
+        navbar.style.visibility = 'visible'
         reloadScrollBars();
     }
 
