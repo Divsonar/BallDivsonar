@@ -115,7 +115,7 @@ function init() {
 
 
 
-    var ambientLight = new THREE.AmbientLight( 0xffee88, 0.1, 1000, 2 );
+    var ambientLight = new THREE.AmbientLight( 0xffee88, 0.05, 1000, 2 );
     ambientLight.position.set( 0, -20, -200 );
     // ambientLight.castShadow = true; 0.15
     scene.add( ambientLight );
@@ -613,7 +613,7 @@ function render() {
     // cube.rotation.x = timer * 0.0003;
     // cube.rotation.z = timer * 0.0002;
 
-    const targetAspect = window.innerWidth / window.innerHeight;
+    const targetAspect = window.innerWidth / window.innerHeight *1.1;
     const imageAspect = 3840 / 2160;
     const factor = imageAspect / targetAspect;
     // When factor larger than 1, that means texture 'wilder' than target。 

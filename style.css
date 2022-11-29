@@ -27,7 +27,7 @@ main {
 	margin: 0px auto;
 	padding: 60px 0px;
 	display: grid;
-	grid-template-columns: repeat(12, 1fr);
+	grid-template-columns: repeat(24, 1fr);
 	opacity: 100%;
 	-webkit-text-stroke-width: 0.15px;
     -webkit-text-stroke-color: black;
@@ -54,35 +54,32 @@ canvas {
 
 header {
 	background: var(--dark-bg);
-	grid-column: 2 / span 12;
-	font-size: 1.75rem;
+	grid-column: 2 / 24;
+	font-size: 2rem;
 	/* padding: 2rem; */
-	margin-bottom: var(--spacing);
+	margin-top: 1rem;
+	text-align: center;
 }
 
 section {
-	grid-column: 2 / 10;
-	padding: 0rem;
+	grid-column: 2 / 20;
+	margin-top: -1.5rem;
+	margin-bottom: 0.5rem;
+	padding: 1rem;
 	background: var(--dark-bg);
 	/* font-size: 1.25rem; */
 	font-size: 1rem;
 	line-height: 1.5;
-	margin-bottom: var(--spacing);
+	/* margin-bottom: var(--spacing); */
 	opacity: 1;
-}
-
-blockquote.end {
-	grid-column: 0 / 12;
-	
-	/* width:auto;
-    display:table */
 }
 
 blockquote {
 	margin: 0;
 	padding: 0;
-	grid-column: 2 / span 12;
-	margin-bottom: var(--spacing);
+	grid-column: 1 / span 24;
+	margin-bottom: 2rem;
+	text-align: center;
 }
 
 blockquote p {
@@ -141,9 +138,9 @@ button {
 }
 
 #progress-bar {
-	position: relative;
+	position: fixed;
 	width: 50%;
-	top: -2%;
+	top: 50%;
 	
 	/* margin-top: 0.5%; */
 	/* height: 2%; */
@@ -155,22 +152,22 @@ label {
 }
 
 #top-bar {
-	position: relative;
-	top: 0rem;
+	position: absolute;
+	top: 38%;
 	text-align: center;
 }
 
 #mid-bar {
-	position: relative;
+	position: absolute;
 	font-size: 1rem;
-	top: 1rem;
+	top: 43%;
 	text-align: center;
 }
 
 #low-bar {
-	position: relative;
+	position: absolute;
 	font-size: 1rem;
-	top: 15%;
+	top: 55%;
 	text-align: center;
 }
 
@@ -183,12 +180,14 @@ a, button, input, select {
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
-	background-color: #00BAF0;
+	border-bottom: 0.25rem solid rgba(0, 0, 0, 0.283);
 	background: linear-gradient(to left, #686868, #46464600);
 	/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 	color: #FFF;
+	margin-top: 0rem;
+	margin-bottom: 0rem;
 	/* height: 50px; */
-	padding: 1em;
+	/* padding: 1em; */
 }
 
 .menu {
@@ -275,6 +274,7 @@ transform: rotate(-405deg);
 	border: 0;
 	transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
 }
+
 #menu-toggle:checked ~ .menu li {
 	border: 1px solid #333;
 	height: 2.5em;
@@ -293,4 +293,16 @@ transform: rotate(-405deg);
 .menu > li:not(:last-child) {
 	border-bottom: 1px solid #444;
 }
+}
+
+#about , #projects , #accomplishments, header{
+background-color: rgba(129, 129, 129, 0.441);
+border: 0.3rem solid rgb(0, 0, 0);
+border-radius: 1rem;
+}
+
+section span { 
+	margin-top: -3rem;
+	padding-bottom: 3rem; 
+  	display: block; 
 }
