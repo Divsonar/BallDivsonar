@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>gpa.rip blog</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico"> 
+    
+    <!-- FontAwesome JS-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+    
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+</head> 
+
+<body>
+    
+    <header class="header text-center bg-dark">	    
+	    <h1 class="blog-name pt-lg-4 mb-0"><a href="index.html">𝖌𝖕𝖆.𝖗𝖎𝖕 𝖇𝖑𝖔𝖌</a></h1>
+        
+	    <nav class="navbar navbar-expand-lg navbar-dark" >
+           
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div id="navigation" class="collapse navbar-collapse flex-column" >
+				<div class="profile-section pt-3 pt-lg-0">
+				    <img class="profile-image mb-3 rounded-circle mx-auto" src="assets/images/profile.jpeg" alt="chicken" >			
+					
+					<div class="bio mb-3"><br>I post things I think are worth posting on my blog.<br>You can find me below through my work socials:</div><!--//bio-->
+					<ul class="social-list list-inline py-3 mx-auto">
+			            <!-- <li class="list-inline-item"><a href="#"><i class="fab fa-twitter fa-fw"></i></a></li> -->
+			            <li class="list-inline-item"><a href="https://www.linkedin.com/in/holden-han-41243423b/"><i class="fab fa-linkedin-in fa-fw text-secondary"></i></a></li>
+			            <li class="list-inline-item"><a href="https://github.com/Divsonar"><i class="fab fa-github-alt fa-fw text-secondary"></i></a></li>
+			            <!-- <li class="list-inline-item"><a href="#"><i class="fab fa-stack-overflow fa-fw"></i></a></li> -->
+			            <!-- <li class="list-inline-item"><a href="#"><i class="fab fa-codepen fa-fw"></i></a></li> -->
+			        </ul>
+			        <hr> 
+				</div><!--//profile-section-->
+				
+				<ul class="navbar-nav flex-column text-left">
+					<li class="nav-item">
+					    <a class="nav-link" href="index.html"><i class="fas fa-home fa-fw mr-2"></i>Site Home</a>
+					</li>
+					<li class="nav-item active">
+					    <a class="nav-link" href="blog.html"><i class="fas fa-bookmark fa-fw mr-2"></i>Blog List<span class="sr-only">(current)</span></a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+    </header>
+    
+    <div class="main-wrapper">
+	    
+	    <article class="blog-post px-3 py-5 p-md-5">
+		    <div class="container">
+			    <header class="blog-post-header">
+				    <h2 class="title mb-2">CSIT's Easter 2023 Challenge Walkthrough</h2>
+				    <div class="meta mb-3"><span class="date">Published 10 April 2023</span><span class="time">5 min read</span></div>
+			    </header>
+			    
+			    <div class="blog-post-body">
+				    <figure class="blog-banner text-center">
+				        <a href="https://www.linkedin.com/feed/update/urn:li:activity:7049697207645601792/"><img class="w-50 img-fluid" src="assets/images/blog/blog-post-1-banner.jpg" alt="image"></a>
+				        <figcaption class="mt-2 text-center image-caption">Image Credit: <a href="https://www.linkedin.com/feed/update/urn:li:activity:7049697207645601792/" target="_blank">CSIT</a></figcaption>
+				    </figure>
+				    <p>The CSIT Easter 2023 Mini Challenge lasted from 7 April 2023 to 23 April 2023, and was first announced on CSIT's LinkedIn. 
+						<br>The link for the challenge download and submission can be found here: <a href="https://www.csit-events.sg/easter-egg-challenge23">Link</a></p>
+				    
+					<h3 class="mt-5 mb-3">Difficulty and Requirements</h3>
+					<p>Challenge Difficulty: 1/5 (Beginner)</p>
+					<p>Theme: Reverse Engineering</p>
+					<p>Estimated Time with Walkthrough: 5-10 Mins</p>
+					<p>Requirements:</p>
+					<ul class="mb-5">
+						<li class="mb-2">Windows OS</li>
+						<li class="mb-2"><a href="https://github.com/dnSpyEx/dnSpy/releases/download/v6.3.0/dnSpy-net-win32.zip">dnSpyEx (32-Bit)</a></li>
+						<li class="mb-2">Basic C# Knowledge (ASM / Assembly not required)</li>
+					</ul>
+					
+					<h3 class="mt-5 mb-3">Given Files</h3>
+					<p><a href="downloads/RabbitHole.zip" download title="RabbitHoleZIP">RabbitHole.zip</a><br></p>
+
+					<h3 class="mt-5 mb-3">Hash Calculation</h3>
+					<p>You can calculate the Hash of the EXE and compare it with the following SHA256 Hash to make sure the EXE is as intended.</p>
+					<p>SHA256 Hash: 13d604a0bda615114681781b93ce7f0226c5faa28e4eba19c12791d9a95d7232</p>
+					<p>CMD Command: certutil -hashfile "C:\fileDirectory\RabbitHole.exe" SHA256</p>
+					<p>Terminal Command: sha256sum ./RabbitHole.exe</p>
+
+				    <h3 class="mt-5 mb-3">Solution Walkthrough</h3>
+				    <p>Open up RabbitHole.exe with dnSpy 32-bit and navigate to the RabbitHole.exe Module, RabbitHole Namespace, MainWindow Type, RImage_MouseLeftButtonUp Method.</p>
+					<p>This method contains the code we need to look at to find the flag.</p>
+				    
+					<figure class="blog-screenshot text-center">
+				        <img class="w-50 img-fluid" src="assets/images/blog/blog-post-1-screenshot-1.png" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Class and Method Structure</figcaption>
+				    </figure>
+					
+					<p>The code should look something like this:</p>
+					<pre class="bg-secondary">
+					<code class="text-white">
+// RabbitHole.MainWindow
+// Token: 0x06000007 RID: 7 RVA: 0x00002134 File Offset: 0x00000334
+private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+{
+	Random random = new Random();
+	Assembly executingAssembly = Assembly.GetExecutingAssembly();
+	string text = "RabbitHole.Resources.aa.txt";
+	string text2 = "RabbitHole.Resources.a.txt";
+	string text3 = "RabbitHole.Resources.aaa.txt";
+	string[] array = new StreamReader(executingAssembly.GetManifestResourceStream(text2)).ReadToEnd().Split(new char[] { ',' });
+	string[] array2 = new StreamReader(executingAssembly.GetManifestResourceStream(text3)).ReadToEnd().Split(new char[] { ',' });
+	Point position = Mouse.GetPosition(this);
+	Point point = new Point(position.X, position.Y);
+	Point point2 = new Point(Convert.ToDouble(array[random.Next(1, 15) % array.Length]), Convert.ToDouble(array2[random.Next(1, 21) % array2.Length]));
+	string text4 = new c().cc();
+	if (point == point2)
+	{
+		byte[] array3 = Convert.FromBase64String(new StreamReader(executingAssembly.GetManifestResourceStream(text)).ReadToEnd());
+		MemoryStream memoryStream = new MemoryStream(this.bbb(array3, text4));
+		BitmapImage bitmapImage = new BitmapImage();
+		bitmapImage.BeginInit();
+		bitmapImage.StreamSource = memoryStream;
+		bitmapImage.EndInit();
+		this.myImg.Source = bitmapImage;
+		return;
+	}
+	MessageBox.Show("The egg is not here and has moved to a new location! Please try again.", string.Format("X={0}, Y={1}", point.X, point.Y), MessageBoxButton.OK, MessageBoxImage.Hand);
+}
+
+					</code>
+				    </pre>
+
+					<p>The Method generates a new set of x and y co-ordinates every time a location on the image in the exe is clicked.</p>
+					<p>The generator takes from the file "RabbitHole.Resources.a.txt" for the x co-ordinate and from the file "RabbitHole.Resources.aaa.txt" for the y co-ordinate, meaning there are only a limited amount of possibilities for generated co-ordinates.</p>
+					<p>The Method then compares the generated co-ordinates to the user's clicked co-ordinates and gives you the flag if they are the same.</p>
+					<p>Since the generation and comparison of co-ordinates only happens after the user clicks on a certain co-ordinate:</p>
+					<li class="mb-2">It would not be possible to know what co-ordinates will be selected by the generator untill after the user has clicked.</li>
+					<li class="mb-2">Given the pre-defined co-ordinates, it would be possible to keep clicking on an answer co-ordinate untill the flag is given, however that would take a long time and alot of effort.</li>
+
+					<pre class="bg-secondary">
+						<code class="text-white">
+// Possible answer x co-ordinates ("RabbitHole.Resources.a.txt")
+
+958,487,1054,100,54,770,98
+
+// Possible answer y co-ordinates ("RabbitHole.Resources.aaa.txt")
+
+10,910,789,507,200
+
+// Possible generated answer co-ordinates
+
+{958,10},{487,10},{1054,10},{100,10},{54,10},{770,10},{98,10},{958,910}......
+
+// With the 35 different possible answer co-ordinates, as long as you keep clicking 
+// on any one of them, with luck on your side, you will eventually be able to get the flag 
+// (With alot of effort and a 2.86% success chance)</code>
+				    </pre>
+
+					<p>To make it easier, we can simply edit the comparison co-ordinates to our selected co-ordinates, or vice versa during debugging.</p>
+					
+					<p>Set a breakpoint right before the comparison operation so that the pointers can be modified.</p>
+					<figure class="blog-screenshot text-center">
+				        <img class="img-fluid" src="assets/images/blog/blog-post-1-screenshot-3.png" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Place Breakpoint</figcaption>
+				    </figure>
+
+					<p>Start the debugger by clicking the start button at the navigation bar.</p>
+					<figure class="blog-screenshot text-center">
+				        <img class="img-fluid" src="assets/images/blog/blog-post-1-screenshot-2.png" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Start Debugging</figcaption>
+				    </figure>
+
+					<p>If the Debug Program prompt appears, simply click on "Ok".</p>
+					<figure class="blog-screenshot text-center">
+				        <img class="img-fluid" src="assets/images/blog/blog-post-1-screenshot-4.png" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Debug Program</figcaption>
+				    </figure>
+
+					<p>Click on any co-ordinate during the debugging process and make sure that the program reaches the breakpoint.</p>
+					<p>After the breakpoint has been reached, click on the dropdown for the "point" variable {1} and change the x and y values {2} to match those of the "point2" variable {3}.</p>
+					<figure class="blog-screenshot text-center">
+				        <img class="img-fluid" src="assets/images/blog/blog-post-1-screenshot-5.png" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Change Values</figcaption>
+				    </figure>
+					<figure class="blog-screenshot text-center">
+				        <img class="img-fluid" src="assets/images/blog/blog-post-1-screenshot-6.png" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Values After Changing</figcaption>
+				    </figure>
+
+					<p>Resume the Program.</p>
+					<figure class="blog-screenshot text-center">
+				        <img class="img-fluid" src="assets/images/blog/blog-post-1-screenshot-7.png" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Resume Button</figcaption>
+				    </figure>
+
+					<p>After resuming the program, the screen will be changed to an image with a golden egg and the details of the flag.</p>
+					<figure class="blog-screenshot text-center">
+				        <img class="img-fluid" src="assets/images/blog/blog-post-1-screenshot-8.png" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Resume Button</figcaption>
+				    </figure>
+
+					<p>Entering the flag on the answer page on CSIT will result in a congratulation page with the following Reward Badge:</p>
+					<figure class="blog-screenshot text-center">
+				        <img class="img-fluid" src="assets/images/blog/badge.webp" alt="image">
+				        <figcaption class="mt-2 text-center image-caption">Reward Badge</figcaption>
+				    </figure>
+
+					<h3 class="mt-5 mb-3">Remarks</h3>
+					<p>Thank you for reading my blog! If it helped you out with learning reverse engineering, feel free to show your support by connecting with me on <a href="https://www.linkedin.com/in/holden-han-41243423b/">LinkedIn</a>! (Leave a message telling me that you came from here!)</p>
+
+				    <!-- <h3 class="mt-5 mb-3">Typography</h3>
+				    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+				    <h5 class="my-3">Bullet Points:</h5>
+				    <ul class="mb-5">
+					  <li class="mb-2">Lorem ipsum dolor sit amet consectetuer.</li>
+					  <li class="mb-2">Aenean commodo ligula eget dolor.</li>
+					  <li class="mb-2">Aenean massa cum sociis natoque penatibus.</li>
+					</ul>
+					<ol class="mb-5">
+					  <li class="mb-2">Lorem ipsum dolor sit amet consectetuer.</li>
+					  <li class="mb-2">Aenean commodo ligula eget dolor.</li>
+					  <li class="mb-2">Aenean massa cum sociis natoque penatibus.</li>
+					</ol> -->
+
+
+					<!-- <h5 class="my-3">Quote Example:</h5>
+					<blockquote class="blockquote m-lg-5 py-3 pl-4 px-lg-5">
+						<p class="mb-2">You might not think that programmers are artists, but programming is an extremely creative profession. It's logic-based creativity.</p>
+						<footer class="blockquote-footer">John Romero</footer>
+					</blockquote> -->
+					
+					<!-- <h5 class="my-3">Table Example:</h5>
+					<table class="table table-striped my-5">
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">First</th>
+								<th scope="col">Last</th>
+								<th scope="col">Handle</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">1</th>
+								<td>Mark</td>
+								<td>Otto</td>
+								<td>@mdo</td>
+							</tr>
+							<tr>
+								<th scope="row">2</th>
+								<td>Jacob</td>
+								<td>Thornton</td>
+								<td>@fat</td>
+							</tr>
+							<tr>
+								<th scope="row">3</th>
+								<td>Larry</td>
+								<td>the Bird</td>
+								<td>@twitter</td>
+							</tr>
+						</tbody>
+					</table> -->
+					
+					<!-- <h5 class="mb-3">Embed A Tweet:</h5>
+					
+					<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">1969:<br>-what&#39;re you doing with that 2KB of RAM?<br>-sending people to the moon<br><br>2017:<br>-what&#39;re you doing with that 1.5GB of RAM?<br>-running Slack</p>&mdash; I Am Devloper (@iamdevloper) <a href="https://twitter.com/iamdevloper/status/926458505355235328?ref_src=twsrc%5Etfw">November 3, 2017</a></blockquote>
+					<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> -->
+
+
+				    
+				    <!-- <h3 class="mt-5 mb-3">Video Example</h3>
+				    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. </p>
+
+				    <div class="embed-responsive embed-responsive-16by9">
+					   <iframe width="560" height="315" src="https://www.youtube.com/embed/hnCmSXCZEpU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>					
+					</div> -->
+				   
+			    </div>
+				
+		    </div><!--//container-->
+	    </article>
+	    
+	    <!-- <section class="promo-section theme-bg-light py-5 text-center">
+		    <div class="container">
+			    <h2 class="title">Promo Section Heading</h2>
+			    <p>You can use this section to promote your side projects etc. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. </p>
+                <figure class="promo-figure">
+			        <a href="https://made4dev.com" target="_blank"><img class="img-fluid" src="assets/images/promo-banner.jpg" alt="image"></a>
+			    </figure>
+		    </div>
+	    </section> -->
+	    
+	    <footer class="footer text-center py-2 theme-bg-dark">
+		   
+	        <!--/* This template is released under the Creative Commons Attribution 3.0 License. Please keep the attribution link below when using for your own project. Thank you for your support. :) If you'd like to use the template without the attribution, you can buy the commercial license via our website: themes.3rdwavemedia.com */-->
+                <small class="copyright">Designed with <i class="fas fa-heart" style="color: #fb866a;"></i> by <a href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
+		   
+	    </footer>
+    
+    </div><!--//main-wrapper-->
+
+    <!-- Javascript -->          
+    <script src="assets/plugins/jquery-3.3.1.min.js"></script>
+    <script src="assets/plugins/popper.min.js"></script> 
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script> 
+    
+    <!-- Page Specific JS -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/blog.js"></script>
+    
+    <!-- Style Switcher (REMOVE ON YOUR PRODUCTION SITE) -->
+    <script src="assets/js/demo/style-switcher.js"></script>     
+    
+
+</body>
+</html> 
+
