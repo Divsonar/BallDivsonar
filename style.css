@@ -29,8 +29,6 @@ main {
 	display: grid;
 	grid-template-columns: repeat(24, 1fr);
 	opacity: 100%;
-	-webkit-text-stroke-width: 0.15px;
-    -webkit-text-stroke-color: black;
 }
 
 main#topdiv {
@@ -62,7 +60,7 @@ header {
 }
 
 section {
-	grid-column: 2 / 20;
+	grid-column: 2 / -2;
 	margin-top: -1.5rem;
 	margin-bottom: 0.5rem;
 	padding: 1rem;
@@ -72,6 +70,15 @@ section {
 	line-height: 1.5;
 	/* margin-bottom: var(--spacing); */
 	opacity: 1;
+}
+
+section#about {
+	grid-column: 2 / -8
+}
+
+section#aboutimg {
+	margin: auto;
+	grid-column: 18 / 22
 }
 
 blockquote {
@@ -254,6 +261,16 @@ transform: rotate(-405deg);
 }
 
 @media (max-width: 700px) {
+section#about {
+	grid-column: 2 / -2
+}
+section#aboutimg {
+	margin-top: 10%;
+	grid-column: 2 / -9
+}
+section#aboutimg img {
+	width:auto
+}
 .menu-button-container {
 	display: flex;
 }
