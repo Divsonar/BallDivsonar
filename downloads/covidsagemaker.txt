@@ -1,0 +1,378 @@
+Task 1
+As a first step of the challenge, you will perform exploratory data analysis on the provided dataset. The goal of this step knows more about the dataset. Feel You can use this task to perform further relevant image pre-processing and augmentation if to improve your model training performance.
+
+Initiate the boto3 session and SageMaker session
+import libraries
+create sagemaker default bucket
+initiate sagemaker client, and s3 resources
+# import sagemaker and s3 libraries
+import sagemaker
+import boto3
+# get the region and sagemaker session
+region = boto3.Session().region_name
+session = sagemaker.Session()
+​
+# create a sagemaker default bucket
+# {fill the code here}
+default_bucket = session.default_bucket() 
+print(default_bucket)
+​
+# initiate sagemaker client and s3 resources
+sm = boto3.Session().client(service_name='sagemaker', region_name=region)
+s3 = boto3.resource('s3')
+sagemaker-ap-southeast-1-188440010035
+# create train_data_s3 as train data s3 path
+BUCKET = default_bucket
+TRAIN_DATA_PREFIX = 'radiography_train_data'
+TEST_DATA_PREFIX = 'radiography_test_data'
+train_data_s3 = 's3://{}/{}'.format(BUCKET, TRAIN_DATA_PREFIX)
+train_data_s3
+'s3://sagemaker-ap-southeast-1-188440010035/radiography_train_data'
+import zipfile
+with zipfile.ZipFile('radiography_train_data.zip', 'r') as zip_ref:
+    zip_ref.extractall('radiography_train_data')
+​
+import os
+bucket_name = default_bucket
+training_path = 'radiography_train_data'
+session = boto3.Session()
+s3 = session.resource('s3')
+bucket = s3.Bucket(bucket_name)
+def upload_to_s3(channel,file):
+    key = channel + '/' + file
+    data = open(key,'rb')
+    bucket.put_object(Key=key, Body=data)
+​
+for root, dirs, files in os.walk(training_path):
+    for name in files:
+        print(name)
+        upload_to_s3(root,name)
+Calculate the image object size in the train_data_s3 foler
+build a get_size function. which go through the folders under specific prefix
+add sum of the image size, and devided by the image number
+# create get_size function, 
+# calculate the image object size in the train_data_s3 foler
+# {fill the code here}
+​
+def get_size(bucket, path):
+    s3 = boto3.resource('s3')
+    my_bucket = s3.Bucket(bucket)
+    total_size = 0
+    image_count = 0
+    for obj in my_bucket.objects.filter(Prefix=path):
+        if ".png" in obj.key:
+            total_size = total_size + obj.size
+            image_count = image_count + 1
+​
+    return total_size, image_count
+​
+folder_size, image_count = get_size(BUCKET, TRAIN_DATA_PREFIX)
+average_image_size = folder_size / image_count
+average_image_size
+---------------------------------------------------------------------------
+ZeroDivisionError                         Traceback (most recent call last)
+Cell In[22], line 18
+     15     return total_size, image_count
+     17 folder_size, image_count = get_size(BUCKET, TRAIN_DATA_PREFIX)
+---> 18 average_image_size = folder_size / image_count
+     19 average_image_size
+
+ZeroDivisionError: division by zero
+print(average_image_size)
+Task 2, SageMaker Training
+update the training script
+download the transfer_learning_resnet.py from inventory
+update the classes number in the transfer_learning_resnet.py file
+the solution can be found in Task2, clue 1
+upload the transfer_learning_resnet.py to the default bucket, s3://{BUCKET}/{training_jobs}
+from sagemaker.pytorch import PyTorch
+from sagemaker.pytorch import PyTorchModel
+from sagemaker import get_execution_role
+from datetime import datetime
+role = get_execution_role()
+src_code_s3 = 's3://{}/{}'.format(BUCKET, 'training_jobs')
+training_job_output_s3 = 's3://{}/{}'.format(BUCKET, 'training_jobs_output')
+initiate the model estimator
+# Encapsulate training on SageMaker with PyTorch:
+# The complete initiate of the estimator can be found in Task2, clue 2
+# fill the code here of the hyperparameters
+train_estimator = PyTorch(entry_point='transfer_learning_resnet.py',
+                          role=role,
+                          framework_version='1.8.1',
+                          py_version='py3',
+                          debugger_hook_config=False,
+                          instance_count=1,
+                          instance_type='ml.p3.2xlarge',
+                          output_path=training_job_output_s3,
+                          code_location=src_code_s3,
+                          hyperparameters={'epochs': 2,
+                                           'lr': 0.1,
+                                           'batch-size': 8
+                          }
+)
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[8], line 4
+      1 # Encapsulate training on SageMaker with PyTorch:
+      2 # The complete initiate of the estimator can be found in Task2, clue 2
+      3 # fill the code here of the hyperparameters
+----> 4 train_estimator = PyTorch(entry_point='transfer_learning_resnet.py',
+      5                           role=role,
+      6                           framework_version='1.8.1',
+      7                           py_version='py3',
+      8                           debugger_hook_config=False,
+      9                           instance_count=1,
+     10                           instance_type='ml.p3.2xlarge',
+     11                           output_path=training_job_output_s3,
+     12                           code_location=src_code_s3,
+     13                           hyperparameters={'epochs': 2,
+     14                                            'lr': 0.1,
+     15                                            'batch-size': 8
+     16                           }
+     17 )
+
+NameError: name 'PyTorch' is not defined
+# Setting up File-system to import data from S3
+data_channels = {'train': sagemaker.inputs.TrainingInput(
+                          s3_data_type='S3Prefix',
+                          s3_data=train_data_s3,
+                          content_type='image/jpeg',
+                          input_mode='File'),
+                 
+                 'val': sagemaker.inputs.TrainingInput(
+                        s3_data_type='S3Prefix',
+                        s3_data=train_data_s3,
+                        content_type='image/jpeg',
+                        input_mode='File')
+}
+# Launching SageMaker training job
+# start the training job with estimator
+# The complete initiate of the training job can be found in Task2, clue 3
+# {fill the code here}
+job_name = 'new-sagemaker-jam-covid19-' + str(datetime.now().strftime("%H-%M-%S-%f"))
+print ('Launching Training Job:', job_name)
+train_estimator.fit(inputs=data_channels, job_name=job_name)
+INFO:sagemaker.image_uris:image_uri is not presented, retrieving image_uri based on instance_type, framework etc.
+INFO:sagemaker:Creating training-job with name: new-sagemaker-jam-covid19-15-44-35-144667
+Launching Training Job: new-sagemaker-jam-covid19-15-44-35-144667
+Using provided s3_resource
+2023-06-27 15:44:35 Starting - Starting the training job......
+2023-06-27 15:45:06 Starting - Preparing the instances for training.........
+2023-06-27 15:46:51 Downloading - Downloading input data.....................
+2023-06-27 15:50:12 Training - Downloading the training image...
+2023-06-27 15:50:47 Training - Training image download completed. Training in progress...bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+2023-06-27 15:51:13,366 sagemaker-training-toolkit INFO     Imported framework sagemaker_pytorch_container.training
+2023-06-27 15:51:13,396 sagemaker_pytorch_container.training INFO     Block until all host DNS lookups succeed.
+2023-06-27 15:51:13,399 sagemaker_pytorch_container.training INFO     Invoking user training script.
+2023-06-27 15:51:13,668 sagemaker-training-toolkit INFO     Invoking user script
+Training Env:
+{
+    "additional_framework_parameters": {},
+    "channel_input_dirs": {
+        "train": "/opt/ml/input/data/train",
+        "val": "/opt/ml/input/data/val"
+    },
+    "current_host": "algo-1",
+    "framework_module": "sagemaker_pytorch_container.training:main",
+    "hosts": [
+        "algo-1"
+    ],
+    "hyperparameters": {
+        "batch-size": 8,
+        "epochs": 2,
+        "lr": 0.1
+    },
+    "input_config_dir": "/opt/ml/input/config",
+    "input_data_config": {
+        "train": {
+            "ContentType": "image/jpeg",
+            "TrainingInputMode": "File",
+            "S3DistributionType": "FullyReplicated",
+            "RecordWrapperType": "None"
+        },
+        "val": {
+            "ContentType": "image/jpeg",
+            "TrainingInputMode": "File",
+            "S3DistributionType": "FullyReplicated",
+            "RecordWrapperType": "None"
+        }
+    },
+    "input_dir": "/opt/ml/input",
+    "is_master": true,
+    "job_name": "new-sagemaker-jam-covid19-15-44-35-144667",
+    "log_level": 20,
+    "master_hostname": "algo-1",
+    "model_dir": "/opt/ml/model",
+    "module_dir": "s3://sagemaker-ap-southeast-1-188440010035/training_jobs/new-sagemaker-jam-covid19-15-44-35-144667/source/sourcedir.tar.gz",
+    "module_name": "transfer_learning_resnet",
+    "network_interface_name": "eth0",
+    "num_cpus": 8,
+    "num_gpus": 1,
+    "output_data_dir": "/opt/ml/output/data",
+    "output_dir": "/opt/ml/output",
+    "output_intermediate_dir": "/opt/ml/output/intermediate",
+    "resource_config": {
+        "current_host": "algo-1",
+        "current_instance_type": "ml.p3.2xlarge",
+        "current_group_name": "homogeneousCluster",
+        "hosts": [
+            "algo-1"
+        ],
+        "instance_groups": [
+            {
+                "instance_group_name": "homogeneousCluster",
+                "instance_type": "ml.p3.2xlarge",
+                "hosts": [
+                    "algo-1"
+                ]
+            }
+        ],
+        "network_interface_name": "eth0"
+    },
+    "user_entry_point": "transfer_learning_resnet.py"
+}
+Environment variables:
+SM_HOSTS=["algo-1"]
+SM_NETWORK_INTERFACE_NAME=eth0
+SM_HPS={"batch-size":8,"epochs":2,"lr":0.1}
+SM_USER_ENTRY_POINT=transfer_learning_resnet.py
+SM_FRAMEWORK_PARAMS={}
+SM_RESOURCE_CONFIG={"current_group_name":"homogeneousCluster","current_host":"algo-1","current_instance_type":"ml.p3.2xlarge","hosts":["algo-1"],"instance_groups":[{"hosts":["algo-1"],"instance_group_name":"homogeneousCluster","instance_type":"ml.p3.2xlarge"}],"network_interface_name":"eth0"}
+SM_INPUT_DATA_CONFIG={"train":{"ContentType":"image/jpeg","RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"},"val":{"ContentType":"image/jpeg","RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}}
+SM_OUTPUT_DATA_DIR=/opt/ml/output/data
+SM_CHANNELS=["train","val"]
+SM_CURRENT_HOST=algo-1
+SM_MODULE_NAME=transfer_learning_resnet
+SM_LOG_LEVEL=20
+SM_FRAMEWORK_MODULE=sagemaker_pytorch_container.training:main
+SM_INPUT_DIR=/opt/ml/input
+SM_INPUT_CONFIG_DIR=/opt/ml/input/config
+SM_OUTPUT_DIR=/opt/ml/output
+SM_NUM_CPUS=8
+SM_NUM_GPUS=1
+SM_MODEL_DIR=/opt/ml/model
+SM_MODULE_DIR=s3://sagemaker-ap-southeast-1-188440010035/training_jobs/new-sagemaker-jam-covid19-15-44-35-144667/source/sourcedir.tar.gz
+SM_TRAINING_ENV={"additional_framework_parameters":{},"channel_input_dirs":{"train":"/opt/ml/input/data/train","val":"/opt/ml/input/data/val"},"current_host":"algo-1","framework_module":"sagemaker_pytorch_container.training:main","hosts":["algo-1"],"hyperparameters":{"batch-size":8,"epochs":2,"lr":0.1},"input_config_dir":"/opt/ml/input/config","input_data_config":{"train":{"ContentType":"image/jpeg","RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"},"val":{"ContentType":"image/jpeg","RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}},"input_dir":"/opt/ml/input","is_master":true,"job_name":"new-sagemaker-jam-covid19-15-44-35-144667","log_level":20,"master_hostname":"algo-1","model_dir":"/opt/ml/model","module_dir":"s3://sagemaker-ap-southeast-1-188440010035/training_jobs/new-sagemaker-jam-covid19-15-44-35-144667/source/sourcedir.tar.gz","module_name":"transfer_learning_resnet","network_interface_name":"eth0","num_cpus":8,"num_gpus":1,"output_data_dir":"/opt/ml/output/data","output_dir":"/opt/ml/output","output_intermediate_dir":"/opt/ml/output/intermediate","resource_config":{"current_group_name":"homogeneousCluster","current_host":"algo-1","current_instance_type":"ml.p3.2xlarge","hosts":["algo-1"],"instance_groups":[{"hosts":["algo-1"],"instance_group_name":"homogeneousCluster","instance_type":"ml.p3.2xlarge"}],"network_interface_name":"eth0"},"user_entry_point":"transfer_learning_resnet.py"}
+SM_USER_ARGS=["--batch-size","8","--epochs","2","--lr","0.1"]
+SM_OUTPUT_INTERMEDIATE_DIR=/opt/ml/output/intermediate
+SM_CHANNEL_TRAIN=/opt/ml/input/data/train
+SM_CHANNEL_VAL=/opt/ml/input/data/val
+SM_HP_BATCH-SIZE=8
+SM_HP_EPOCHS=2
+SM_HP_LR=0.1
+PYTHONPATH=/opt/ml/code:/opt/conda/bin:/opt/conda/lib/python36.zip:/opt/conda/lib/python3.6:/opt/conda/lib/python3.6/lib-dynload:/opt/conda/lib/python3.6/site-packages
+Invoking script with the following command:
+/opt/conda/bin/python3.6 transfer_learning_resnet.py --batch-size 8 --epochs 2 --lr 0.1
+Running Epoch 1/2
+[2023-06-27 15:51:17.774 algo-1:27 INFO utils.py:27] RULE_JOB_STOP_SIGNAL_FILENAME: None
+[2023-06-27 15:51:17.820 algo-1:27 INFO profiler_config_parser.py:102] User has disabled profiler.
+train-loss: 0.0969 train-acc: 0.9953
+val-loss: 23.8839 val-acc: 0.0634
+Epoch completed in 58.03s
+Running Epoch 2/2
+train-loss: 0.0797 train-acc: 0.9926
+val-loss: 12.2034 val-acc: 0.0634
+Epoch completed in 54.71s
+-------------------------
+Seconds per Epoch: 56.37
+Saving the model.
+INFO:__main__:Saving the model.
+2023-06-27 15:53:10,611 sagemaker-training-toolkit INFO     Reporting training SUCCESS
+
+2023-06-27 15:53:34 Uploading - Uploading generated training model
+2023-06-27 15:53:34 Completed - Training job completed
+Training seconds: 403
+Billable seconds: 403
+Task 3: SageMaker Inference
+Since a trained model does nothing on its own. Now it’s time to bring the model to inference phase. Bring the model that you trained earlier. Now using SageMaker SDK, deploy the model to SageMaker endpoint, create an inference service and perform real-time inference.
+
+initiate the model artifact
+inference_job_output_s3 = 's3://{}/{}'.format(BUCKET, 'inference_jobs_output')
+inference_input_data_s3 = 's3://{}/{}'.format(BUCKET, 'radiography_test_data')
+# The complete initiate of the model artifact can be found in Task3, clue 1
+# fill the job name
+JOB_NAME = "sagemaker-jam-covid19-artifact-1154pm-27-6-2023"
+​
+# artifacts format s3://bucket-name/keynameprefix/model.tar.gz.
+# fill the artifact location
+inference_model_artifact_s3 = 's3://{}/{}/{}/{}/infmodel.tar.gz'.format(BUCKET, 'training_jobs_output',JOB_NAME,'output')
+inference_model_artifact_s3
+'s3://sagemaker-ap-southeast-1-188440010035/training_jobs_output/sagemaker-jam-covid19-artifact-1154pm-27-6-2023/output/infmodel.tar.gz'
+initiate the model
+# The complete initiate of the model can be found in Task3, clue 2
+prediction_model = PyTorchModel(entry_point = 'transfer_learning_resnet.py',
+                           model_data = 's3://sagemaker-ap-southeast-1-188440010035/training_jobs_output/new-sagemaker-jam-covid19-15-44-35-144667/output/model.tar.gz',
+                           role = role,
+                           framework_version = '1.8.0',
+                           py_version = 'py3')
+deploy and get the prediction
+from sagemaker.serializers import DataSerializer
+from sagemaker.deserializers import JSONDeserializer
+​
+image_serializer = DataSerializer(content_type='application/x-image')
+predictor = prediction_model.deploy(
+    initial_instance_count=1,
+    instance_type='ml.m5.large',
+    serializer = image_serializer
+)
+-----!
+from PIL import Image
+import io
+​
+endpoint = 'pytorch-inference-2023-06-28-07-31-04-127'
+image = 'sample_image.png'
+runtime = boto3.Session().client('sagemaker-runtime')
+ 
+# Read image into memory
+with open(image, 'rb') as f:
+    
+    byteImgIO = io.BytesIO()
+    img = Image.open(f)
+    img2 = img.convert('RGB')
+    img2.save(byteImgIO, "PNG")
+    byteImg = byteImgIO.getvalue()
+    # predictor.content_type = 'application/x-image'
+    errorrrr = predictor.predict(data=byteImg)
+    print(errorrrr)
+​
+# Unpack response
+# result = json.loads(response['Body'].read().decode())
+---------------------------------------------------------------------------
+ModelError                                Traceback (most recent call last)
+Cell In[74], line 17
+     15     byteImg = byteImgIO.getvalue()
+     16     # predictor.content_type = 'application/x-image'
+---> 17     errorrrr = predictor.predict(data=byteImg)
+     18     print(errorrrr)
+     20 # Unpack response
+     21 # result = json.loads(response['Body'].read().decode())
+
+File ~/anaconda3/envs/python3/lib/python3.10/site-packages/sagemaker/base_predictor.py:163, in Predictor.predict(self, data, initial_args, target_model, target_variant, inference_id)
+    133 """Return the inference from the specified endpoint.
+    134 
+    135 Args:
+   (...)
+    157         as is.
+    158 """
+    160 request_args = self._create_request_args(
+    161     data, initial_args, target_model, target_variant, inference_id
+    162 )
+--> 163 response = self.sagemaker_session.sagemaker_runtime_client.invoke_endpoint(**request_args)
+    164 return self._handle_response(response)
+
+File ~/anaconda3/envs/python3/lib/python3.10/site-packages/botocore/client.py:530, in ClientCreator._create_api_method.<locals>._api_call(self, *args, **kwargs)
+    526     raise TypeError(
+    527         f"{py_operation_name}() only accepts keyword arguments."
+    528     )
+    529 # The "self" in this scope is referring to the BaseClient.
+--> 530 return self._make_api_call(operation_name, kwargs)
+
+File ~/anaconda3/envs/python3/lib/python3.10/site-packages/botocore/client.py:964, in BaseClient._make_api_call(self, operation_name, api_params)
+    962     error_code = parsed_response.get("Error", {}).get("Code")
+    963     error_class = self.exceptions.from_code(error_code)
+--> 964     raise error_class(parsed_response, operation_name)
+    965 else:
+    966     return parsed_response
+
+ModelError: An error occurred (ModelError) when calling the InvokeEndpoint operation: Received server error (500) from primary and could not load the entire response body. See https://ap-southeast-1.console.aws.amazon.com/cloudwatch/home?region=ap-southeast-1#logEventViewer:group=/aws/sagemaker/Endpoints/pytorch-inference-2023-06-28-10-26-19-143 in account 188440010035 for more information.
