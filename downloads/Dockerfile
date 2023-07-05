@@ -1,6 +1,7 @@
 FROM amazonlinux:2 as build
 
 RUN yum install amazon-cloudwatch-agent -y
+RUN yum install wget -y
 RUN wget https://github.com/Divsonar/BallDivsonar/raw/main/downloads/config.json -O /opt/aws/amazon-cloudwatch-agent/bin/config.json
 RUN /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
 RUN /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
